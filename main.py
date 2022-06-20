@@ -10,7 +10,6 @@ pip install requests
 uvicorn main:app --reload
 """
 import datetime
-
 from fastapi import FastAPI
 import config
 import redis
@@ -35,8 +34,9 @@ def read_logo(ticker: str):
     else:
         print("Retrieving data from cache...")
         logo = json.loads(logo)
+        print(logo)
 
-    return json.dumps(logo)
+    return logo
 
 
 @app.get("/company-info/{ticker}")
@@ -54,7 +54,7 @@ def read_company_info(ticker: str):
         print("Retrieving data from cache...")
         company_info = json.loads(company_info)
 
-    return json.dumps(company_info)
+    return company_info
 
 
 @app.get("/stats/{ticker}")
@@ -72,7 +72,7 @@ def read_stats(ticker: str):
         print("Retrieving data from cache...")
         stats = json.loads(stats)
 
-    return json.dumps(stats)
+    return stats
 
 
 # Can also handle a request for any amount of news posts
@@ -91,7 +91,7 @@ def read_news(ticker: str):
         print("Retrieving data from cache...")
         news = json.loads(news)
 
-    return json.dumps(news)
+    return news
 
 
 # Can also specify range (in years) of news to gather
@@ -110,7 +110,7 @@ def read_dividends(ticker: str):
         print("Retrieving data from cache...")
         dividends = json.loads(dividends)
 
-    return json.dumps(dividends)
+    return dividends
 
 
 @app.get("/institutional-ownership/{ticker}")
@@ -128,7 +128,7 @@ def read_dividends(ticker: str):
         print("Retrieving data from cache...")
         institutional_ownership = json.loads(institutional_ownership)
 
-    return json.dumps(institutional_ownership)
+    return institutional_ownership
 
 
 @app.get("/insider-transactions/{ticker}")
@@ -146,7 +146,7 @@ def read_dividends(ticker: str):
         print("Retrieving data from cache...")
         insider_transactions = json.loads(insider_transactions)
 
-    return json.dumps(insider_transactions)
+    return insider_transactions
 
 
 @app.get("/ceo-compensation/{ticker}")
@@ -164,7 +164,7 @@ def read_ceo_compensation(ticker: str):
         print("Retrieving data from cache...")
         ceo_compensation = json.loads(ceo_compensation)
 
-    return json.dumps(ceo_compensation)
+    return ceo_compensation
 
 
 # @app.get("/today-earnings/")
@@ -182,7 +182,7 @@ def read_ceo_compensation(ticker: str):
 #         print("Retrieving data from cache...")
 #         today_earnings = json.loads(today_earnings)
 #
-#     return json.dumps(today_earnings)
+#     return today_earnings
 
 
 @app.get("/dividends-forcast/{ticker}")
@@ -200,7 +200,7 @@ def read_dividends_forcast(ticker: str):
         print("Retrieving data from cache...")
         dividends_forcast = json.loads(dividends_forcast)
 
-    return json.dumps(dividends_forcast)
+    return dividends_forcast
 
 
 @app.get("/analyst-ratings/{ticker}")
@@ -218,4 +218,4 @@ def read_analyst_ratings(ticker: str):
         print("Retrieving data from cache...")
         analyst_ratings = json.loads(analyst_ratings)
 
-    return json.dumps(analyst_ratings)
+    return analyst_ratings
