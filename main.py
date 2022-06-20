@@ -149,9 +149,73 @@ def read_dividends(ticker: str):
     return json.dumps(insider_transactions)
 
 
-# TODO
-# https://iexcloud.io/docs/api/#ceo-compensation
-# https://cloud.iexapis.com/stable/time-series/DIVIDENDS_FORECAST/aapl
-# https://cloud.iexapis.com/stable/stock/market/today-earnings
-# https://cloud.iexapis.com/stable/stock/aapl/fund-ownership ??
+@app.get("/ceo-compensation/{ticker}")
+def read_ceo_compensation(ticker: str):
+    stock = IEXStock(config.IEX_KEY, ticker)
+    ceo_compensation_info_key = f"{ticker}_ceo-compensations"
+    ceo_compensation = redis_client.get(ceo_compensation_info_key)
 
+    if ceo_compensation is None:
+        print("Retrieving data from API...")
+        ceo_compensation = stock.get_ceo_compensation()
+        redis_client.set(ceo_compensation_info_key, json.dumps(ceo_compensation))
+        redis_client.expire(ceo_compensation_info_key, datetime.timedelta(days=7))
+    else:
+        print("Retrieving data from cache...")
+        ceo_compensation = json.loads(ceo_compensation)
+
+    return json.dumps(ceo_compensation)
+
+
+# @app.get("/today-earnings/")
+# def read_today_earnings():
+#     stock = IEXStock(config.IEX_KEY, None)
+#     today_earnings_info_key = "today-earnings"
+#     today_earnings = redis_client.get(today_earnings_info_key)
+#
+#     if today_earnings is None:
+#         print("Retrieving data from API...")
+#         today_earnings = stock.get_today_earnings()
+#         redis_client.set(today_earnings_info_key, json.dumps(today_earnings))
+#         redis_client.expire(today_earnings_info_key, datetime.timedelta(days=1))
+#     else:
+#         print("Retrieving data from cache...")
+#         today_earnings = json.loads(today_earnings)
+#
+#     return json.dumps(today_earnings)
+
+
+@app.get("/dividends-forcast/{ticker}")
+def read_dividends_forcast(ticker: str):
+    stock = IEXStock(config.IEX_KEY, ticker)
+    dividends_forcast_info_key = f"{ticker}_dividends-forcast"
+    dividends_forcast = redis_client.get(dividends_forcast_info_key)
+
+    if dividends_forcast is None:
+        print("Retrieving data from API...")
+        dividends_forcast = stock.get_dividends_forcast()
+        redis_client.set(dividends_forcast_info_key, json.dumps(dividends_forcast))
+        redis_client.expire(dividends_forcast_info_key, datetime.timedelta(days=7))
+    else:
+        print("Retrieving data from cache...")
+        dividends_forcast = json.loads(dividends_forcast)
+
+    return json.dumps(dividends_forcast)
+
+
+@app.get("/analyst-ratings/{ticker}")
+def read_analyst_ratings(ticker: str):
+    stock = IEXStock(config.IEX_KEY, ticker)
+    analyst_ratings_info_key = f"{ticker}_analyst-ratings"
+    analyst_ratings = redis_client.get(analyst_ratings_info_key)
+
+    if analyst_ratings is None:
+        print("Retrieving data from API...")
+        analyst_ratings = stock.get_analyst_ratings()
+        redis_client.set(analyst_ratings_info_key, json.dumps(analyst_ratings))
+        redis_client.expire(analyst_ratings_info_key, datetime.timedelta(days=7))
+    else:
+        print("Retrieving data from cache...")
+        analyst_ratings = json.loads(analyst_ratings)
+
+    return json.dumps(analyst_ratings)

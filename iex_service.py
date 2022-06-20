@@ -48,3 +48,27 @@ class IEXStock:
         r = requests.get(url)
 
         return r.json()
+
+    def get_ceo_compensation(self):
+        url = f"{self.BASE_URL}/stock/{self.symbol}/ceo-compensation?token={self.token}"
+        r = requests.get(url)
+
+        return r.json()
+
+    def get_today_earnings(self):
+        url = f"{self.BASE_URL}/stock/market/today-earnings?token={self.token}"
+        r = requests.get(url)
+
+        return r.json()
+
+    def get_dividends_forcast(self):
+        url = f"{self.BASE_URL}/time-series/DIVIDENDS_FORECAST/{self.symbol}?token={self.token}"
+        r = requests.get(url)
+
+        return r.json()
+
+    def get_analyst_ratings(self):
+        url = f"{self.BASE_URL}/time-series/CORE_ESTIMATES/{self.symbol}?token={self.token}"
+        r = requests.get(url)
+
+        return r.json()
