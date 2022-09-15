@@ -10,6 +10,8 @@ pip install requests
 uvicorn main:app --reload
 """
 import datetime
+import random
+
 from fastapi import FastAPI
 import config
 import redis
@@ -219,3 +221,9 @@ def read_analyst_ratings(ticker: str):
         analyst_ratings = json.loads(analyst_ratings)
 
     return analyst_ratings
+
+
+# Dummy JSON data for sentiment analysis UI
+@app.get("/sentiment/{ticker}/{social_media}")
+def read_analyst_ratings(ticker: str, social_media: str):
+    return json.dumps({'ticker': ticker, 'socialMedia': social_media, 'sentimentScore': random.randint(0, 99)+random.randint(0, 10)/10, 'itemsScanned': random.randint(100, 2000)})
