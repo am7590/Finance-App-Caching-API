@@ -11,7 +11,7 @@ uvicorn main:app --reload
 """
 import datetime
 import random
-
+from currency import *
 from fastapi import FastAPI
 import config
 import redis
@@ -250,3 +250,10 @@ def get_sector_data():
         sectors = json.loads(sectors)
 
     return sectors
+
+
+@app.get('/currency')
+def get_currency_rates():
+    return [get_currency_exchange_rates("EUR"), get_currency_exchange_rates("JPY"),
+            get_currency_exchange_rates("GBP"), get_currency_exchange_rates("AUD"),
+            get_currency_exchange_rates("CAD"), get_currency_exchange_rates("CNY")]
