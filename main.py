@@ -225,5 +225,28 @@ def read_analyst_ratings(ticker: str):
 
 # Dummy JSON data for sentiment analysis UI
 @app.get("/sentiment/{ticker}/{social_media}")
-def read_analyst_ratings(ticker: str, social_media: str):
-    return json.dumps({'ticker': ticker, 'socialMedia': social_media, 'sentimentScore': random.randint(0, 99)+random.randint(0, 10)/10, 'itemsScanned': random.randint(100, 2000)})
+def read_sentiment(ticker: str, social_media: str):
+    return json.loads(json.dumps(
+        {'ticker': ticker,
+         'socialMedia': social_media,
+         'sentimentScore': random.randint(0, 99) + random.randint(0, 10) / 10,
+         'itemsScanned': random.randint(100, 999)
+         }))
+
+
+@app.get("/sectors")
+def get_sector_data():
+    stock = IEXStock(config.IEX_KEY, "")
+    sector_key = "sector"
+    sectors = redis_client.get(sector_key)
+
+    if sectors is None:
+        print("Retrieving data from API...")
+        sectors = stock.get_sector_data()
+        redis_client.set(sector_key, json.dumps(sectors))
+        redis_client.expire(sector_key, datetime.timedelta(days=1))
+    else:
+        print("Retrieving data from cache...")
+        sectors = json.loads(sectors)
+
+    return sectors

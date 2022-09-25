@@ -72,3 +72,9 @@ class IEXStock:
         r = requests.get(url)
 
         return r.json()
+
+    def get_sector_data(self):
+        url = f"{self.BASE_URL}/stock/market/sector-performance/?token={self.token}"
+        r = requests.get(url)
+
+        return r.json()
