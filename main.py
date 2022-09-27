@@ -17,6 +17,9 @@ import config
 import redis
 import json
 from iex_service import IEXStock
+from pprint import pprint
+from urllib.request import urlopen
+from urllib.parse import urlencode
 
 app = FastAPI()
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
@@ -257,3 +260,21 @@ def get_currency_rates():
     return [get_currency_exchange_rates("EUR"), get_currency_exchange_rates("JPY"),
             get_currency_exchange_rates("GBP"), get_currency_exchange_rates("AUD"),
             get_currency_exchange_rates("CAD"), get_currency_exchange_rates("CNY")]
+
+
+@app.get('/analyst/{ticker}')
+def get_analyst_ratings(ticker: str):
+    stock = IEXStock(config.IEX_KEY, "")
+    host = 'https://query2.finance.yahoo.com'
+    path = f'/v10/finance/quoteSummary/{ticker}'
+    params = {
+        'formatted': 'true',
+        'lang': 'en-US',
+        'region': 'US',
+        'modules': 'recommendationTrend'
+    }
+
+    response = urlopen('{}{}?{}'.format(host, path, urlencode(params)))
+    data = json.loads(response.read().decode())
+
+    return data['quoteSummary']['result']
