@@ -78,3 +78,10 @@ class IEXStock:
         r = requests.get(url)
 
         return r.json()
+
+    def get_time_series_data(self):
+        # https://cloud.iexapis.com/stable/stock/{self.symbol}/chart/1d?token=pk_b8d39299974f41f99ef8f79101ab2617
+        url = f"{self.BASE_URL}/stock/{self.symbol}/chart/1d?token={self.token}"
+        r = requests.get(url)
+
+        return r.json()

@@ -288,3 +288,10 @@ def get_dividends_forcast(ticker: str):
     analysts = si.get_analysts_info(ticker)['Earnings History']
     return json.loads(analysts.to_json())
 
+
+@app.get("/time-series-1d/{ticker}")
+def read_dividends_forcast(ticker: str):
+    stock = IEXStock(config.IEX_KEY, ticker)
+    time_series = stock.get_time_series_data()
+
+    return time_series
