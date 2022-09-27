@@ -6,20 +6,23 @@ source .venv/bin/activate
 pip install uvicorn
 pip install fastapi
 pip install redis
-pip install requests
+pip install ...
 uvicorn main:app --reload
 """
 import datetime
-import random
-from currency import *
-from fastapi import FastAPI
-import config
-import redis
 import json
-from iex_service import IEXStock
-from pprint import pprint
-from urllib.request import urlopen
+import pandas
+import random
 from urllib.parse import urlencode
+from urllib.request import urlopen
+
+import redis
+from fastapi import FastAPI
+import yahoo_fin.stock_info as si
+
+import config
+from currency import *
+from iex_service import IEXStock
 
 app = FastAPI()
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
@@ -278,3 +281,10 @@ def get_analyst_ratings(ticker: str):
     data = json.loads(response.read().decode())
 
     return data['quoteSummary']['result']
+
+
+@app.get('/dividends-history/{ticker}')
+def get_dividends_forcast(ticker: str):
+    analysts = si.get_analysts_info(ticker)['Earnings History']
+    return json.loads(analysts.to_json())
+
