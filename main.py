@@ -13,6 +13,7 @@ import datetime
 import json
 import pandas
 import random
+import uvicorn
 from urllib.parse import urlencode
 from urllib.request import urlopen
 
@@ -296,3 +297,6 @@ def read_dividends_forcast(ticker: str):
     time_series = stock.get_time_series_data()
 
     return time_series
+
+if __name__ = "__main__":
+	uvicorn.run(app, host="0.0.0.0", port=8000, workers=2)
