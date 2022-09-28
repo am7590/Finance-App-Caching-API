@@ -26,7 +26,7 @@ from currency import *
 from iex_service import IEXStock
 
 app = FastAPI()
-redis_client = redis.Redis(host='alek-redis.apps.okd4.csh.rit.edu', port=6379, db=0)
+redis_client = redis.Redis(host='alek-redis.apps.okd4.csh.rit.edu', port=443, db=0)
 
 
 @app.get("/logo/{ticker}")
