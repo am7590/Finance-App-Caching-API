@@ -11,4 +11,4 @@ ONBUILD RUN poetry install
 
 COPY . /app
 
-CMD ["uvicorn", "main:app"]
+CMD ["python3", "-m", "uvicorn", "main:app"]
