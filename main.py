@@ -9,7 +9,7 @@ pip install redis
 pip install ...
 uvicorn main:app --reload
 """
-import datetime
+from datetime import datetime, timedelta
 import json
 import pandas
 import random
@@ -39,7 +39,7 @@ def read_logo(ticker: str):
     if logo is None:
         logo = stock.get_logo()
         redis_client.set(logo_key, json.dumps(logo))
-        redis_client.expire(logo_key, datetime.timedelta(days=365))
+        redis_client.expire(logo_key, timedelta(days=365))
         print(f"Retrieved {logo} from the API")
     else:
         logo = json.loads(logo)
@@ -57,7 +57,7 @@ def read_company_info(ticker: str):
     if company_info is None:
         company_info = stock.get_company_info()
         redis_client.set(company_info_key, json.dumps(company_info))
-        redis_client.expire(company_info_key, datetime.timedelta(hours=24))
+        redis_client.expire(company_info_key, timedelta(hours=24))
         print(f"Retrieved {company_info} from the API")
     else:
         company_info = json.loads(company_info)
@@ -75,7 +75,7 @@ def read_stats(ticker: str):
     if stats is None:
         stats = stock.get_stats()
         redis_client.set(stats_info_key, json.dumps(stats))
-        redis_client.expire(stats_info_key, datetime.timedelta(hours=24))
+        redis_client.expire(stats_info_key, timedelta(hours=24))
         print(f"Retrieved {stats} from the API")
     else:
         stats = json.loads(stats)
@@ -94,7 +94,7 @@ def read_news(ticker: str):
     if news is None:
         news = stock.get_company_news()
         redis_client.set(news_info_key, json.dumps(news))
-        redis_client.expire(news_info_key, datetime.timedelta(hours=1))
+        redis_client.expire(news_info_key, timedelta(hours=1))
         print(f"Retrieved {news} from the API")
     else:
         news = json.loads(news)
@@ -113,7 +113,7 @@ def read_dividends(ticker: str):
     if dividends is None:
         dividends = stock.get_dividends()
         redis_client.set(dividends_info_key, json.dumps(dividends))
-        redis_client.expire(dividends_info_key, datetime.timedelta(days=1))
+        redis_client.expire(dividends_info_key, timedelta(days=1))
         print(f"Retrieved {dividends} from the API")
     else:
         dividends = json.loads(dividends)
@@ -131,7 +131,7 @@ def read_dividends(ticker: str):
     if institutional_ownership is None:
         institutional_ownership = stock.get_institutional_ownership()
         redis_client.set(institutional_ownership_info_key, json.dumps(institutional_ownership))
-        redis_client.expire(institutional_ownership_info_key, datetime.timedelta(days=1))
+        redis_client.expire(institutional_ownership_info_key, timedelta(days=1))
         print(f"Retrieved {institutional_ownership} from the API")
     else:
         institutional_ownership = json.loads(institutional_ownership)
@@ -149,7 +149,7 @@ def read_dividends(ticker: str):
     if insider_transactions is None:
         insider_transactions = stock.get_insider_transactions()
         redis_client.set(insider_transactions_info_key, json.dumps(insider_transactions))
-        redis_client.expire(insider_transactions_info_key, datetime.timedelta(days=1))
+        redis_client.expire(insider_transactions_info_key, timedelta(days=1))
         print(f"Retrieved {insider_transactions} from the API")
     else:
         insider_transactions = json.loads(insider_transactions)
@@ -167,7 +167,7 @@ def read_ceo_compensation(ticker: str):
     if ceo_compensation is None:
         ceo_compensation = stock.get_ceo_compensation()
         redis_client.set(ceo_compensation_info_key, json.dumps(ceo_compensation))
-        redis_client.expire(ceo_compensation_info_key, datetime.timedelta(days=7))
+        redis_client.expire(ceo_compensation_info_key, timedelta(days=7))
         print(f"Retrieved {ceo_compensation} from the API")
     else:
         ceo_compensation = json.loads(ceo_compensation)
@@ -186,7 +186,7 @@ def read_ceo_compensation(ticker: str):
 #         print("Retrieving data from API...")
 #         today_earnings = stock.get_today_earnings()
 #         redis_client.set(today_earnings_info_key, json.dumps(today_earnings))
-#         redis_client.expire(today_earnings_info_key, datetime.timedelta(days=1))
+#         redis_client.expire(today_earnings_info_key, timedelta(days=1))
 #     else:
 #         print("Retrieving data from cache...")
 #         today_earnings = json.loads(today_earnings)
@@ -204,7 +204,7 @@ def read_dividends_forcast(ticker: str):
         print("Retrieving data from API...")
         dividends_forcast = stock.get_dividends_forcast()
         redis_client.set(dividends_forcast_info_key, json.dumps(dividends_forcast))
-        redis_client.expire(dividends_forcast_info_key, datetime.timedelta(days=7))
+        redis_client.expire(dividends_forcast_info_key, timedelta(days=7))
     else:
         dividends_forcast = json.loads(dividends_forcast)
         print(f"Retrieved {dividends_forcast} from cache")
@@ -223,7 +223,7 @@ def read_analyst_ratings(ticker: str):
         print("Retrieving data from API...")
         analyst_ratings = stock.get_analyst_ratings()
         redis_client.set(analyst_ratings_info_key, json.dumps(analyst_ratings))
-        redis_client.expire(analyst_ratings_info_key, datetime.timedelta(days=7))
+        redis_client.expire(analyst_ratings_info_key, timedelta(days=7))
     else:
         analyst_ratings = json.loads(analyst_ratings)
         print(f"Retrieved {analyst_ratings} from cache")
@@ -253,7 +253,7 @@ def get_sector_data():
         print("Retrieving data from API...")
         sectors = stock.get_sector_data()
         redis_client.set(sector_key, json.dumps(sectors))
-        redis_client.expire(sector_key, datetime.timedelta(days=1))
+        redis_client.expire(sector_key, timedelta(days=1))
     else:
         sectors = json.loads(sectors)
         print(f"Retrieved {sectors} from cache")
@@ -299,6 +299,7 @@ def read_dividends_forcast(ticker: str):
     time_series = stock.get_time_series_data()
 
     return time_series
+
 
 if __name__ == "__main__":
 	uvicorn.run(app, host="0.0.0.0", port=8000)
