@@ -37,14 +37,13 @@ def read_logo(ticker: str):
     logo = redis_client.get(logo_key)
 
     if logo is None:
-        print("Retrieving data from API...")
         logo = stock.get_logo()
         redis_client.set(logo_key, json.dumps(logo))
         redis_client.expire(logo_key, datetime.timedelta(days=365))
+        print(f"Retrieved {logo} from the API")
     else:
-        print("Retrieving data from cache...")
         logo = json.loads(logo)
-        print(logo)
+        print(f"Retrieved {logo} from cache")
 
     return logo
 
@@ -56,13 +55,13 @@ def read_company_info(ticker: str):
     company_info = redis_client.get(company_info_key)
 
     if company_info is None:
-        print("Retrieving data from API...")
         company_info = stock.get_company_info()
         redis_client.set(company_info_key, json.dumps(company_info))
         redis_client.expire(company_info_key, datetime.timedelta(hours=24))
+        print(f"Retrieved {company_info} from the API")
     else:
-        print("Retrieving data from cache...")
         company_info = json.loads(company_info)
+        print(f"Retrieved {company_info} from cache")
 
     return company_info
 
@@ -74,13 +73,13 @@ def read_stats(ticker: str):
     stats = redis_client.get(stats_info_key)
 
     if stats is None:
-        print("Retrieving data from API...")
         stats = stock.get_stats()
         redis_client.set(stats_info_key, json.dumps(stats))
         redis_client.expire(stats_info_key, datetime.timedelta(hours=24))
+        print(f"Retrieved {stats} from the API")
     else:
-        print("Retrieving data from cache...")
         stats = json.loads(stats)
+        print(f"Retrieved {stats} from cache")
 
     return stats
 
@@ -93,13 +92,13 @@ def read_news(ticker: str):
     news = redis_client.get(news_info_key)
 
     if news is None:
-        print("Retrieving data from API...")
         news = stock.get_company_news()
         redis_client.set(news_info_key, json.dumps(news))
         redis_client.expire(news_info_key, datetime.timedelta(hours=1))
+        print(f"Retrieved {news} from the API")
     else:
-        print("Retrieving data from cache...")
         news = json.loads(news)
+        print(f"Retrieved {news} from cache")
 
     return news
 
@@ -112,13 +111,13 @@ def read_dividends(ticker: str):
     dividends = redis_client.get(dividends_info_key)
 
     if dividends is None:
-        print("Retrieving data from API...")
         dividends = stock.get_dividends()
         redis_client.set(dividends_info_key, json.dumps(dividends))
         redis_client.expire(dividends_info_key, datetime.timedelta(days=1))
+        print(f"Retrieved {dividends} from the API")
     else:
-        print("Retrieving data from cache...")
         dividends = json.loads(dividends)
+        print(f"Retrieved {dividends} from cache")
 
     return dividends
 
@@ -130,13 +129,13 @@ def read_dividends(ticker: str):
     institutional_ownership = redis_client.get(institutional_ownership_info_key)
 
     if institutional_ownership is None:
-        print("Retrieving data from API...")
         institutional_ownership = stock.get_institutional_ownership()
         redis_client.set(institutional_ownership_info_key, json.dumps(institutional_ownership))
         redis_client.expire(institutional_ownership_info_key, datetime.timedelta(days=1))
+        print(f"Retrieved {institutional_ownership} from the API")
     else:
-        print("Retrieving data from cache...")
         institutional_ownership = json.loads(institutional_ownership)
+        print(f"Retrieved {institutional_ownership} from cache")
 
     return institutional_ownership
 
@@ -148,13 +147,13 @@ def read_dividends(ticker: str):
     insider_transactions = redis_client.get(insider_transactions_info_key)
 
     if insider_transactions is None:
-        print("Retrieving data from API...")
         insider_transactions = stock.get_insider_transactions()
         redis_client.set(insider_transactions_info_key, json.dumps(insider_transactions))
         redis_client.expire(insider_transactions_info_key, datetime.timedelta(days=1))
+        print(f"Retrieved {insider_transactions} from the API")
     else:
-        print("Retrieving data from cache...")
         insider_transactions = json.loads(insider_transactions)
+        print(f"Retrieved {insider_transactions} from cache")
 
     return insider_transactions
 
@@ -166,13 +165,13 @@ def read_ceo_compensation(ticker: str):
     ceo_compensation = redis_client.get(ceo_compensation_info_key)
 
     if ceo_compensation is None:
-        print("Retrieving data from API...")
         ceo_compensation = stock.get_ceo_compensation()
         redis_client.set(ceo_compensation_info_key, json.dumps(ceo_compensation))
         redis_client.expire(ceo_compensation_info_key, datetime.timedelta(days=7))
+        print(f"Retrieved {ceo_compensation} from the API")
     else:
-        print("Retrieving data from cache...")
         ceo_compensation = json.loads(ceo_compensation)
+        print(f"Retrieved {ceo_compensation} from cache")
 
     return ceo_compensation
 
@@ -207,8 +206,9 @@ def read_dividends_forcast(ticker: str):
         redis_client.set(dividends_forcast_info_key, json.dumps(dividends_forcast))
         redis_client.expire(dividends_forcast_info_key, datetime.timedelta(days=7))
     else:
-        print("Retrieving data from cache...")
         dividends_forcast = json.loads(dividends_forcast)
+        print(f"Retrieved {dividends_forcast} from cache")
+
 
     return dividends_forcast
 
@@ -225,9 +225,10 @@ def read_analyst_ratings(ticker: str):
         redis_client.set(analyst_ratings_info_key, json.dumps(analyst_ratings))
         redis_client.expire(analyst_ratings_info_key, datetime.timedelta(days=7))
     else:
-        print("Retrieving data from cache...")
         analyst_ratings = json.loads(analyst_ratings)
+        print(f"Retrieved {analyst_ratings} from cache")
 
+    print(analyst_ratings)
     return analyst_ratings
 
 
@@ -254,8 +255,8 @@ def get_sector_data():
         redis_client.set(sector_key, json.dumps(sectors))
         redis_client.expire(sector_key, datetime.timedelta(days=1))
     else:
-        print("Retrieving data from cache...")
         sectors = json.loads(sectors)
+        print(f"Retrieved {sectors} from cache")
 
     return sectors
 
@@ -281,6 +282,7 @@ def get_analyst_ratings(ticker: str):
 
     response = urlopen('{}{}?{}'.format(host, path, urlencode(params)))
     data = json.loads(response.read().decode())
+    print(data)
 
     return data['quoteSummary']['result']
 
