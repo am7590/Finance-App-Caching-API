@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "finance-app-caching-api"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+license = "UNLICENSED"
+readme = "README.md"
+packages = [{include = "finance_app_caching_api"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.85.0"
+uvicorn = "^0.18.3"
+pandas = "^1.5.0"
+yahoo-fin = "^0.8.9.1"
+redis = "^4.3.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+start = "app:main"

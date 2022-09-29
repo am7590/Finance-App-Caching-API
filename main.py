@@ -13,6 +13,7 @@ import datetime
 import json
 import pandas
 import random
+import uvicorn
 from urllib.parse import urlencode
 from urllib.request import urlopen
 
@@ -20,17 +21,18 @@ import redis
 from fastapi import FastAPI
 import yahoo_fin.stock_info as si
 
-import config
+import os
+
 from currency import *
 from iex_service import IEXStock
 
 app = FastAPI()
-redis_client = redis.Redis(host='localhost', port=6379, db=0)
+redis_client = redis.Redis(host='k8s.erwijet.com', port=6379, db=0)
 
 
 @app.get("/logo/{ticker}")
 def read_logo(ticker: str):
-    stock = IEXStock(config.IEX_KEY, ticker)
+    stock = IEXStock(os.environ.get('IEX_TOKEN'), ticker)
     logo_key = f"{ticker}_logo"
     logo = redis_client.get(logo_key)
 
@@ -49,7 +51,7 @@ def read_logo(ticker: str):
 
 @app.get("/company-info/{ticker}")
 def read_company_info(ticker: str):
-    stock = IEXStock(config.IEX_KEY, ticker)
+    stock = IEXStock(os.environ.get('IEX_TOKEN'), ticker)
     company_info_key = f"{ticker}_company_info"
     company_info = redis_client.get(company_info_key)
 
@@ -67,7 +69,7 @@ def read_company_info(ticker: str):
 
 @app.get("/stats/{ticker}")
 def read_stats(ticker: str):
-    stock = IEXStock(config.IEX_KEY, ticker)
+    stock = IEXStock(os.environ.get('IEX_TOKEN'), ticker)
     stats_info_key = f"{ticker}_stats"
     stats = redis_client.get(stats_info_key)
 
@@ -86,7 +88,7 @@ def read_stats(ticker: str):
 # Can also handle a request for any amount of news posts
 @app.get("/news/{ticker}")
 def read_news(ticker: str):
-    stock = IEXStock(config.IEX_KEY, ticker)
+    stock = IEXStock(os.environ.get('IEX_TOKEN'), ticker)
     news_info_key = f"{ticker}_news"
     news = redis_client.get(news_info_key)
 
@@ -105,7 +107,7 @@ def read_news(ticker: str):
 # Can also specify range (in years) of news to gather
 @app.get("/dividends/{ticker}")
 def read_dividends(ticker: str):
-    stock = IEXStock(config.IEX_KEY, ticker)
+    stock = IEXStock(os.environ.get('IEX_TOKEN'), ticker)
     dividends_info_key = f"{ticker}_dividends"
     dividends = redis_client.get(dividends_info_key)
 
@@ -123,7 +125,7 @@ def read_dividends(ticker: str):
 
 @app.get("/institutional-ownership/{ticker}")
 def read_dividends(ticker: str):
-    stock = IEXStock(config.IEX_KEY, ticker)
+    stock = IEXStock(os.environ.get('IEX_TOKEN'), ticker)
     institutional_ownership_info_key = f"{ticker}_institutional-ownership"
     institutional_ownership = redis_client.get(institutional_ownership_info_key)
 
@@ -141,7 +143,7 @@ def read_dividends(ticker: str):
 
 @app.get("/insider-transactions/{ticker}")
 def read_dividends(ticker: str):
-    stock = IEXStock(config.IEX_KEY, ticker)
+    stock = IEXStock(os.environ.get('IEX_TOKEN'), ticker)
     insider_transactions_info_key = f"{ticker}_insider-transactions"
     insider_transactions = redis_client.get(insider_transactions_info_key)
 
@@ -159,7 +161,7 @@ def read_dividends(ticker: str):
 
 @app.get("/ceo-compensation/{ticker}")
 def read_ceo_compensation(ticker: str):
-    stock = IEXStock(config.IEX_KEY, ticker)
+    stock = IEXStock(os.environ.get('IEX_TOKEN'), ticker)
     ceo_compensation_info_key = f"{ticker}_ceo-compensations"
     ceo_compensation = redis_client.get(ceo_compensation_info_key)
 
@@ -177,7 +179,7 @@ def read_ceo_compensation(ticker: str):
 
 # @app.get("/today-earnings/")
 # def read_today_earnings():
-#     stock = IEXStock(config.IEX_KEY, None)
+#     stock = IEXStock(os.environ.get('IEX_TOKEN'), None)
 #     today_earnings_info_key = "today-earnings"
 #     today_earnings = redis_client.get(today_earnings_info_key)
 #
@@ -195,7 +197,7 @@ def read_ceo_compensation(ticker: str):
 
 @app.get("/dividends-forcast/{ticker}")
 def read_dividends_forcast(ticker: str):
-    stock = IEXStock(config.IEX_KEY, ticker)
+    stock = IEXStock(os.environ.get('IEX_TOKEN'), ticker)
     dividends_forcast_info_key = f"{ticker}_dividends-forcast"
     dividends_forcast = redis_client.get(dividends_forcast_info_key)
 
@@ -213,7 +215,7 @@ def read_dividends_forcast(ticker: str):
 
 @app.get("/analyst-ratings/{ticker}")
 def read_analyst_ratings(ticker: str):
-    stock = IEXStock(config.IEX_KEY, ticker)
+    stock = IEXStock(os.environ.get('IEX_TOKEN'), ticker)
     analyst_ratings_info_key = f"{ticker}_analyst-ratings"
     analyst_ratings = redis_client.get(analyst_ratings_info_key)
 
@@ -242,7 +244,7 @@ def read_sentiment(ticker: str, social_media: str):
 
 @app.get("/sectors")
 def get_sector_data():
-    stock = IEXStock(config.IEX_KEY, "")
+    stock = IEXStock(os.environ.get('IEX_TOKEN'), "")
     sector_key = "sector"
     sectors = redis_client.get(sector_key)
 
@@ -267,7 +269,7 @@ def get_currency_rates():
 
 @app.get('/analyst/{ticker}')
 def get_analyst_ratings(ticker: str):
-    stock = IEXStock(config.IEX_KEY, "")
+    stock = IEXStock(os.environ.get('IEX_TOKEN'), "")
     host = 'https://query2.finance.yahoo.com'
     path = f'/v10/finance/quoteSummary/{ticker}'
     params = {
@@ -291,7 +293,10 @@ def get_dividends_forcast(ticker: str):
 
 @app.get("/time-series-1d/{ticker}")
 def read_dividends_forcast(ticker: str):
-    stock = IEXStock(config.IEX_KEY, ticker)
+    stock = IEXStock(os.environ.get('IEX_TOKEN'), ticker)
     time_series = stock.get_time_series_data()
 
     return time_series
+
+if __name__ == "__main__":
+	uvicorn.run(app, host="0.0.0.0", port=8000)
