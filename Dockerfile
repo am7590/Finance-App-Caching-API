@@ -1,14 +1,20 @@
-FROM docker.io/python:3.10
+FROM docker.io/python:3.10-buster
 WORKDIR /app
 
 RUN apt update && \
-  apt install curl -y && \
   curl -sSL https://install.python-poetry.org | python3 -
 
-ONBUILD COPY pyproject.toml pyproject.toml
-ONBUILD COPY poetry.lock poetry.lock
-ONBUILD RUN poetry install
+ENV POETRY_VERSION=1.2.1
+
+RUN pip install "poetry==$POETRY_VERSION"
+
+
+COPY pyproject.toml pyproject.toml
+COPY poetry.lock poetry.lock
+
+RUN poetry config virtualenvs.create false --local
+RUN poetry install --no-root
 
 COPY . /app
 
-CMD ["poetry", "run", "start"]
+CMD ["python", "/app/main.py"]
