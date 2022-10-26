@@ -27,7 +27,7 @@ from currency import *
 from iex_service import IEXStock
 
 app = FastAPI()
-redis_client = redis.Redis(host='k8s.erwijet.com', port=6379, db=0)
+redis_client = redis.Redis(host='alek-redis', port=6379, db=0)
 
 
 @app.get("/logo/{ticker}")
@@ -302,4 +302,7 @@ def read_dividends_forcast(ticker: str):
 
 
 if __name__ == "__main__":
-	uvicorn.run(app, host="0.0.0.0", port=8000)
+	# uvicorn.run(app, host="0.0.0.0", port=8000)
+    stock = IEXStock(os.environ.get('IEX_TOKEN'), "TSLA")
+    logo = stock.get_logo()
+    print(logo)
